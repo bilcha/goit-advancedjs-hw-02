@@ -1,0 +1,23 @@
+.timer,
+.field {
+  display: flex;
+  column-gap: 10px;
+  align-items: baseline;
+}
+
+.field {
+  flex-flow: column;
+  align-items: center;
+}
+
+.value {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  padding-top: 16px;
+}
+
+.label {
+  font-size: 9px;
+  text-transform: uppercase;
+}
