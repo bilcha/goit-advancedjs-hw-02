@@ -4,6 +4,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 const startBtn = document.querySelector("button[data-start]");
+const inputField = document.querySelector("#datetime-picker");
 const daysField = document.querySelector("span[data-days]");
 const hoursField= document.querySelector("span[data-hours]");
 const minutesField = document.querySelector("span[data-minutes]");
@@ -40,7 +41,7 @@ function checkDate(selectedDate, now){
   }
 }
 
-function showTime(ms){
+function showTime(ms) {
   const time = convertMs(ms);
   daysField.textContent = addLeadingZero(time.days.toString());
   hoursField.textContent = addLeadingZero(time.hours.toString());
@@ -52,9 +53,12 @@ function addLeadingZero(value) {
 }
 
 function handlerStartBtnCick() {
+  startBtn.disabled = true;
+  inputField.disabled = true;
   const countInterval = setInterval(() => {
     if (countdounTime < 1000) {
       clearInterval(countInterval);
+      inputField.disabled = false;
       return;
     }
     countdounTime -= 1000;
