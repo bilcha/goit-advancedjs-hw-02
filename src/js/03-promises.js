@@ -8,51 +8,37 @@ submitBtn.addEventListener('click', handlerSubmitBtnClick);
 function handlerSubmitBtnClick(evt) {
   evt.preventDefault();
   const promisesQuantity = form.elements.amount.value;
-  const promiseDelay = +form.elements.delay.value;
+  let promiseDelay = +form.elements.delay.value;
   const promiseStep = +form.elements.step.value;
 
-  let promises = [];
-
   for (let i = 1; i <= promisesQuantity; i++){
-    if (i === 1) {
-      promises.push(createPromise(i, promiseDelay));
-    } else {
-      promises.push(createPromise(i, promiseDelay + promiseStep * (i-1)));
-    }
+    createPromise(i, promiseDelay).then((value) => {
+      iziToast.success({
+        title: 'Success',
+        message: `Fulfilled promise ${value.position} in ${value.delay}ms`,
+        position: 'topRight'
+      });
+    }).catch((err) => {
+        iziToast.error({
+          title: 'Error',
+          message: `Rejected promise ${err.position} in ${err.delay}ms`,
+          position: 'topRight'
+        });
+    })    
+    promiseDelay += promiseStep;
   }
-
-  Promise.allSettled(promises).then((items) => { 
-    items.forEach((item, idx) => { 
-      const delay = item.value ? item.value.delay : item.reason.delay;
-      setTimeout(() => {
-        if (item.value) {
-          iziToast.success({
-            title: 'Success',
-            message: `Fulfilled promise ${idx+1} in ${delay}ms`,
-            position: 'topRight'
-          });
-          console.log(`✅ Fulfilled promise ${idx+1} in ${delay}ms`);
-
-        } else {
-          iziToast.error({
-            title: 'Error',
-            message: `Rejected promise ${idx+1} in ${delay}ms`,
-            position: 'topRight'
-          });
-          console.log(`❌ Rejected promise ${idx+1} in ${delay}ms`);
-        }
-       }, delay);
-    })
-  })
+ form.reset();
 }
 
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
-  return new Promise((response, reject) => {
-    if (shouldResolve) {
-      response({ position, delay });
-    } else {
-      reject({ position, delay });
-    }
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay)
   })
 }
